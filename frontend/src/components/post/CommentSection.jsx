@@ -279,7 +279,7 @@ const CommentSection = ({ postId, comments, onCommentAdded, onReplyAdded, showSn
 
               {/* Indented Replies List */}
               {comment.replies && comment.replies.map((reply) => (
-                <Box key={reply._id} sx={{ display: 'flex', gap: 1.2, pl: 5.5, mt: 0.8, alignItems: 'flex-start' }}>
+                <Box key={reply._id} sx={{ display: 'flex', gap: { xs: 1, sm: 1.2 }, pl: { xs: 3, sm: 5.5 }, mt: 0.8, alignItems: 'flex-start' }}>
                   <Avatar
                     sx={{
                       width: 22,
@@ -325,7 +325,7 @@ const CommentSection = ({ postId, comments, onCommentAdded, onReplyAdded, showSn
                 <Box
                   component="form"
                   onSubmit={(e) => handleSubmitReply(e, comment._id)}
-                  sx={{ display: 'flex', gap: 1.2, pl: 5.5, mt: 1, alignItems: 'center' }}
+                  sx={{ display: 'flex', gap: { xs: 1, sm: 1.2 }, pl: { xs: 3, sm: 5.5 }, mt: 1, alignItems: 'center' }}
                 >
                   <Avatar
                     sx={{

@@ -8,25 +8,26 @@ import ForumIcon from '@mui/icons-material/Forum';
 
 const Login = () => {
   return (
-    <Container component="main" maxWidth="xs">
+    <Container component="main" maxWidth="xs" sx={{ px: { xs: 1.5, sm: 3 } }}>
       <Box
         sx={{
-          minHeight: '90vh',
+          minHeight: '100vh',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
+          py: { xs: 3, sm: 0 },
         }}
       >
         <Paper
           elevation={2}
           sx={{
-            p: 4,
+            p: { xs: 3, sm: 4 },
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             width: '100%',
-            borderRadius: 4,
+            borderRadius: { xs: 3, sm: 4 },
             backgroundColor: 'background.paper',
           }}
         >

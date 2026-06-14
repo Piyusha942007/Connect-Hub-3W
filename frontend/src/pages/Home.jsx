@@ -133,7 +133,7 @@ const Home = () => {
       {/* Top Navigation Bar with search bound to feed */}
       <Navbar searchQuery={searchQuery} onSearchChange={changeSearchQuery} />
 
-      <Container maxWidth="sm" sx={{ px: { xs: 1.5, sm: 3 } }}>
+      <Container maxWidth="sm" sx={{ px: { xs: 0, sm: 2, md: 3 } }}>
         {/* Global Error Banner */}
         {error && (
           <Alert severity="error" sx={{ mb: 3, borderRadius: 3 }} onClose={() => {}}>
@@ -152,6 +152,7 @@ const Home = () => {
             mb: 2.5,
             borderBottom: 1,
             borderColor: 'divider',
+            px: { xs: 1.5, sm: 0 },
             '& .MuiTab-root': {
               fontWeight: 700,
               textTransform: 'none',
@@ -177,6 +178,7 @@ const Home = () => {
               overflowX: 'auto',
               pb: 1.5,
               mb: 1.5,
+              px: { xs: 1.5, sm: 0 },
               scrollbarWidth: 'none',
               '&::-webkit-scrollbar': {
                 display: 'none',
@@ -207,7 +209,7 @@ const Home = () => {
           </Box>
 
           {/* Sort selection */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap', px: { xs: 0.5, sm: 0 } }}>
             <Typography variant="caption" sx={{ fontWeight: 700, color: 'text.secondary', textTransform: 'uppercase', letterSpacing: 0.5 }}>
               Sort:
             </Typography>

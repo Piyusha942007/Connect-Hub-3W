@@ -204,7 +204,7 @@ const CreatePost = ({ onPostCreated, showSnackbar }) => {
     : (!text.trim() && !imageFile);
 
   return (
-    <Card sx={{ mb: 3, p: 1 }}>
+    <Card sx={{ mb: { xs: 1.5, sm: 3 }, p: { xs: 0.5, sm: 1 }, borderRadius: { xs: 0, sm: '12px' } }}>
       <CardContent>
         <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start' }}>
           <Avatar
@@ -379,6 +379,8 @@ const CreatePost = ({ onPostCreated, showSnackbar }) => {
                 pt: 1.5,
                 borderTop: '1px solid rgba(0,0,0,0.06)',
                 mt: 1,
+                gap: 1,
+                flexWrap: { xs: 'wrap', sm: 'nowrap' },
               }}
             >
               {/* Media Upload & Emojis & Category select */}
@@ -512,10 +514,11 @@ const CreatePost = ({ onPostCreated, showSnackbar }) => {
                 onClick={handleSubmit}
                 disabled={isPostDisabled || submitting}
                 sx={{
-                  px: 4,
+                  px: { xs: 2, sm: 4 },
                   borderRadius: '8px',
                   fontWeight: 600,
-                  minWidth: 120,
+                  minWidth: { xs: 'auto', sm: 120 },
+                  flexShrink: 0,
                 }}
               >
                 {submitting ? (

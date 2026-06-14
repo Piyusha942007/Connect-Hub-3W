@@ -19,22 +19,25 @@ const SearchContainer = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: 20,
   backgroundColor: theme.palette.mode === 'dark' ? '#0f172a' : '#f1f3f4',
-  marginRight: theme.spacing(2),
-  marginLeft: theme.spacing(2),
+  marginRight: theme.spacing(1),
+  marginLeft: theme.spacing(1),
   width: '100%',
-  maxWidth: 150,
+  maxWidth: 110,
   transition: 'all 0.25s ease-in-out',
   border: '1px solid transparent',
   [theme.breakpoints.up('sm')]: {
     marginLeft: theme.spacing(3),
-    width: 'auto',
+    marginRight: theme.spacing(2),
     maxWidth: 240,
   },
   '&:focus-within': {
     backgroundColor: theme.palette.mode === 'dark' ? '#020617' : '#fff',
     borderColor: theme.palette.primary.main,
     boxShadow: `0 0 0 4px ${theme.palette.mode === 'dark' ? 'rgba(144, 202, 249, 0.15)' : 'rgba(25,118,210,.12)'}`,
-    maxWidth: 300,
+    maxWidth: 220,
+    [theme.breakpoints.up('sm')]: {
+      maxWidth: 300,
+    },
   },
 }));
 
@@ -80,8 +83,9 @@ const Navbar = ({ searchQuery, onSearchChange }) => {
       <Container maxWidth="md">
         <Toolbar disableGutters sx={{ justifyContent: 'space-between' }}>
           {/* Logo Brand */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <HubLogoIcon size={28} />
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 0.5, sm: 1 }, flexShrink: 0 }}>
+            <HubLogoIcon size={26} />
+            {/* Full name on sm+, abbreviated on xs */}
             <Typography
               variant="h6"
               noWrap
@@ -92,10 +96,26 @@ const Navbar = ({ searchQuery, onSearchChange }) => {
                 background: 'linear-gradient(135deg, #1976d2 0%, #1565c0 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
-                display: { xs: 'none', sm: 'block' }
+                display: { xs: 'none', sm: 'block' },
+                fontSize: { sm: '1.05rem', md: '1.1rem' },
               }}
             >
               ConnectHub
+            </Typography>
+            <Typography
+              variant="subtitle1"
+              component="div"
+              sx={{
+                fontWeight: 800,
+                letterSpacing: '-0.5px',
+                background: 'linear-gradient(135deg, #1976d2 0%, #1565c0 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                display: { xs: 'block', sm: 'none' },
+                fontSize: '0.9rem',
+              }}
+            >
+              CH
             </Typography>
           </Box>
 
@@ -116,7 +136,7 @@ const Navbar = ({ searchQuery, onSearchChange }) => {
 
           {/* User Profile / Actions */}
           {user && (
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 0.5, sm: 1.5 } }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 0.3, sm: 1 } }}>
               {/* Theme Mode Toggle */}
               <IconButton
                 onClick={toggleThemeMode}

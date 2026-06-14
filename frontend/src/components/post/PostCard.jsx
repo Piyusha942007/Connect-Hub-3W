@@ -29,7 +29,7 @@ import Skeleton from '@mui/material/Skeleton';
 import VerifiedIcon from '@mui/icons-material/Verified';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { LikeIcon, CommentIcon, ShareIcon, PromoteIcon, TrendingIcon, CloseIcon, MoreIcon } from '../common/CustomIcons';
+import { LikeIcon, CommentIcon, ShareIcon, PromoteIcon, TrendingIcon, CloseIcon, MoreIcon, ImageIcon } from '../common/CustomIcons';
 
 const PostCard = ({ post, onLikeToggle, onCommentAdded, onReplyAdded, onPostUpdated, onPostDeleted, showSnackbar }) => {
   const { user } = useAuth();
@@ -43,6 +43,7 @@ const PostCard = ({ post, onLikeToggle, onCommentAdded, onReplyAdded, onPostUpda
 
   // New enhancements states and refs
   const [textExpanded, setTextExpanded] = useState(false);
+  const [imageError, setImageError] = useState(false);
   const [likesModalOpen, setLikesModalOpen] = useState(false);
   const [promoteDialogOpen, setPromoteDialogOpen] = useState(false);
   const commentInputRef = React.useRef(null);
@@ -166,7 +167,7 @@ const PostCard = ({ post, onLikeToggle, onCommentAdded, onReplyAdded, onPostUpda
   // Dynamic image url computation
   const getImageUrl = (imagePath) => {
     if (!imagePath) return '';
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+    const apiUrl = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/$/, '');
     return `${apiUrl}${imagePath}`;
   };
 
@@ -216,9 +217,10 @@ const PostCard = ({ post, onLikeToggle, onCommentAdded, onReplyAdded, onPostUpda
   return (
     <Card
       sx={{
-        mb: 3,
+        mb: { xs: 1.5, sm: 3 },
         backgroundColor: (theme) => theme.palette.mode === 'dark' ? '#1e293b' : '#ffffff',
         border: (theme) => theme.palette.mode === 'dark' ? '1px solid rgba(255, 255, 255, 0.08)' : '1px solid #e5e7eb',
+        borderRadius: { xs: 0, sm: '12px' },
         position: 'relative',
         ...(post.isPromoted && {
           backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(212, 175, 55, 0.08)' : '#fffdf3',
@@ -528,39 +530,62 @@ const PostCard = ({ post, onLikeToggle, onCommentAdded, onReplyAdded, onPostUpda
             borderBottom: (theme) => theme.palette.mode === 'dark' ? '1px solid rgba(255,255,255,0.05)' : '1px solid rgba(0,0,0,0.03)',
             display: 'flex',
             justifyContent: 'center',
-            cursor: 'pointer',
-            minHeight: 200,
+            cursor: imageError ? 'default' : 'pointer',
+            minHeight: imageError ? 'auto' : 200,
             '&:hover img': {
               filter: 'brightness(0.95)',
               transform: 'scale(1.005)',
             },
           }}
-          onClick={handleImageClick}
-          onDoubleClick={handleImageDoubleClick}
+          onClick={imageError ? null : handleImageClick}
+          onDoubleClick={imageError ? null : handleImageDoubleClick}
         >
-          {!imageLoaded && (
-            <Skeleton
-              variant="rectangular"
-              width="100%"
-              height="100%"
-              animation="wave"
-              sx={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
-            />
+          {imageError ? (
+            <Box
+              sx={{
+                width: '100%',
+                py: 4,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'text.secondary',
+                gap: 1.5,
+              }}
+            >
+              <ImageIcon size={32} style={{ opacity: 0.5 }} />
+              <Typography variant="caption" sx={{ fontWeight: 700, opacity: 0.8, letterSpacing: 0.2 }}>
+                Image unavailable (Render Ephemeral disk reset)
+              </Typography>
+            </Box>
+          ) : (
+            <>
+              {!imageLoaded && (
+                <Skeleton
+                  variant="rectangular"
+                  width="100%"
+                  height="100%"
+                  animation="wave"
+                  sx={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
+                />
+              )}
+              <img
+                ref={imgRef}
+                src={getImageUrl(post.image)}
+                alt="Post media (click to view full screen, double click to like)"
+                style={{
+                  width: '100%',
+                  maxHeight: 450,
+                  objectFit: 'contain',
+                  transition: 'opacity 0.25s ease-in-out',
+                  opacity: imageLoaded ? 1 : 0,
+                  display: 'block',
+                }}
+                onLoad={() => setImageLoaded(true)}
+                onError={() => setImageError(true)}
+              />
+            </>
           )}
-          <img
-            ref={imgRef}
-            src={getImageUrl(post.image)}
-            alt="Post media (click to view full screen, double click to like)"
-            style={{
-              width: '100%',
-              maxHeight: 450,
-              objectFit: 'contain',
-              transition: 'opacity 0.25s ease-in-out',
-              opacity: imageLoaded ? 1 : 0,
-              display: 'block',
-            }}
-            onLoad={() => setImageLoaded(true)}
-          />
           
           {showHeartPop && (
             <Box
@@ -670,7 +695,7 @@ const PostCard = ({ post, onLikeToggle, onCommentAdded, onReplyAdded, onPostUpda
           }}
           aria-label={isLikedByMe ? 'Unlike post' : 'Like post'}
         >
-          <Box component="span" sx={{ display: { xs: 'none', '@media (min-width: 400px)': { display: 'inline' } } }}>
+          <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>
             {isLikedByMe ? 'Liked' : 'Like'}
           </Box>
         </Button>
@@ -695,7 +720,7 @@ const PostCard = ({ post, onLikeToggle, onCommentAdded, onReplyAdded, onPostUpda
             },
           }}
         >
-          <Box component="span" sx={{ display: { xs: 'none', '@media (min-width: 400px)': { display: 'inline' } } }}>
+          <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>
             Comment
           </Box>
         </Button>
@@ -724,7 +749,7 @@ const PostCard = ({ post, onLikeToggle, onCommentAdded, onReplyAdded, onPostUpda
             },
           }}
         >
-          <Box component="span" sx={{ display: { xs: 'none', '@media (min-width: 400px)': { display: 'inline' } } }}>
+          <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>
             Share
           </Box>
         </Button>
@@ -750,7 +775,7 @@ const PostCard = ({ post, onLikeToggle, onCommentAdded, onReplyAdded, onPostUpda
               },
             }}
           >
-            <Box component="span" sx={{ display: { xs: 'none', '@media (min-width: 400px)': { display: 'inline' } } }}>
+            <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>
               {post.isPromoted ? 'Featured' : 'Promote'}
             </Box>
           </Button>
@@ -777,19 +802,21 @@ const PostCard = ({ post, onLikeToggle, onCommentAdded, onReplyAdded, onPostUpda
         onClose={() => setDetailModalOpen(false)}
         maxWidth="md"
         fullWidth
+        fullScreen={window.innerWidth < 600}
         slotProps={{
           paper: {
             sx: {
-              borderRadius: '12px',
+              borderRadius: { xs: 0, sm: '12px' },
               overflow: 'hidden',
-              maxHeight: '90vh',
+              maxHeight: { xs: '100vh', sm: '90vh' },
+              m: { xs: 0, sm: 2 },
             },
           },
         }}
       >
         <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, height: { xs: '85vh', md: '80vh' } }}>
           {/* Left Media Panel */}
-          {post.image && (
+          {post.image && !imageError && (
             <Box
               sx={{
                 width: { xs: '100%', md: '55%' },
@@ -816,8 +843,8 @@ const PostCard = ({ post, onLikeToggle, onCommentAdded, onReplyAdded, onPostUpda
           {/* Right Interactive Panel */}
           <Box
             sx={{
-              width: { xs: '100%', md: post.image ? '45%' : '100%' },
-              height: { xs: post.image ? 'calc(85vh - 220px)' : '85vh', md: '100%' },
+              width: { xs: '100%', md: (post.image && !imageError) ? '45%' : '100%' },
+              height: { xs: (post.image && !imageError) ? 'calc(85vh - 220px)' : '85vh', md: '100%' },
               display: 'flex',
               flexDirection: 'column',
               backgroundColor: 'background.paper',
