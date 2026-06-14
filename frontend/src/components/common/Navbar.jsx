@@ -120,7 +120,7 @@ const Navbar = ({ searchQuery, onSearchChange }) => {
           </Box>
 
           {/* Search Field (only shown if handler provided, i.e., Home feed) */}
-          {user && onSearchChange && (
+          {onSearchChange && (
             <SearchContainer>
               <SearchIconWrapper>
                 <SearchIcon size={18} />
@@ -135,7 +135,7 @@ const Navbar = ({ searchQuery, onSearchChange }) => {
           )}
 
           {/* User Profile / Actions */}
-          {user && (
+          {user ? (
             <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 0.3, sm: 1 } }}>
               {/* Theme Mode Toggle */}
               <IconButton
@@ -264,6 +264,49 @@ const Navbar = ({ searchQuery, onSearchChange }) => {
               >
                 <LogoutIcon size={18} />
               </IconButton>
+            </Box>
+          ) : (
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1, sm: 2 } }}>
+              {/* Theme Mode Toggle */}
+              <IconButton
+                onClick={toggleThemeMode}
+                color="inherit"
+                size="medium"
+                aria-label={`Switch to ${mode === 'light' ? 'dark' : 'light'} mode`}
+                sx={{ color: 'text.secondary' }}
+              >
+                {mode === 'light' ? <MoonIcon size={20} /> : <SunIcon size={20} />}
+              </IconButton>
+
+              <Button
+                variant="text"
+                color="primary"
+                onClick={() => window.location.href = '/login'}
+                sx={{
+                  fontWeight: 700,
+                  fontSize: '0.85rem',
+                  textTransform: 'none',
+                  borderRadius: 2,
+                  display: { xs: 'none', sm: 'inline-flex' }
+                }}
+              >
+                Sign In
+              </Button>
+
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => window.location.href = '/signup'}
+                sx={{
+                  fontWeight: 700,
+                  fontSize: '0.85rem',
+                  textTransform: 'none',
+                  borderRadius: 2,
+                  px: { xs: 1.8, sm: 2.5 }
+                }}
+              >
+                Sign Up
+              </Button>
             </Box>
           )}
         </Toolbar>

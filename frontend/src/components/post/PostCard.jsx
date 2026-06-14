@@ -165,8 +165,14 @@ const PostCard = ({ post, onLikeToggle, onCommentAdded, onReplyAdded, onPostUpda
   const isLikedByMe = post.likes.some((like) => like.userId === user?._id);
 
   // Dynamic image url computation
+  // Supports both: full Cloudinary URLs (new) and legacy /uploads/ relative paths (old posts)
   const getImageUrl = (imagePath) => {
     if (!imagePath) return '';
+    // If already a full URL (Cloudinary or any CDN), use as-is
+    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+      return imagePath;
+    }
+    // Legacy: relative path like /uploads/image-xxx.jpg — prepend API base URL
     const apiUrl = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/$/, '');
     return `${apiUrl}${imagePath}`;
   };

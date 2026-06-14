@@ -67,6 +67,10 @@ const CommentSection = ({ postId, comments, onCommentAdded, onReplyAdded, showSn
   };
 
   const handleToggleReplyForm = useCallback((commentId) => {
+    if (!user) {
+      showSnackbar('You must be logged in to reply to comments.', 'warning');
+      return;
+    }
     setReplyingToCommentId((prevId) => {
       if (prevId === commentId) {
         setReplyText('');
@@ -76,11 +80,15 @@ const CommentSection = ({ postId, comments, onCommentAdded, onReplyAdded, showSn
         return commentId;
       }
     });
-  }, []);
+  }, [user, showSnackbar]);
 
   const handleSubmitReply = async (e, commentId) => {
     e.preventDefault();
 
+    if (!user) {
+      showSnackbar('You must be logged in to reply to comments.', 'warning');
+      return;
+    }
     if (!replyText.trim()) return;
 
     const textToSend = replyText.trim();
@@ -123,55 +131,79 @@ const CommentSection = ({ postId, comments, onCommentAdded, onReplyAdded, showSn
       <Divider sx={{ mb: 2, borderColor: 'rgba(0,0,0,0.04)' }} />
 
       {/* Input Field for New Comment */}
-      <Box component="form" onSubmit={handleSubmitComment} sx={{ display: 'flex', gap: 1.5, alignItems: 'center', mb: 2 }}>
-        <Avatar
+      {user ? (
+        <Box component="form" onSubmit={handleSubmitComment} sx={{ display: 'flex', gap: 1.5, alignItems: 'center', mb: 2 }}>
+          <Avatar
+            sx={{
+              background: getGradientForUsername(user?.username),
+              fontWeight: 700,
+              width: 32,
+              height: 32,
+              fontSize: '0.85rem',
+            }}
+          >
+            {user?.username ? user.username[0].toUpperCase() : 'U'}
+          </Avatar>
+          <TextField
+            inputRef={commentInputRef}
+            placeholder="Write a comment..."
+            size="small"
+            fullWidth
+            value={commentText}
+            onChange={(e) => setCommentText(e.target.value)}
+            disabled={submitting}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleSubmitComment(e);
+              }
+            }}
+            sx={{
+              flexGrow: 1,
+              '& .MuiOutlinedInput-root': {
+                borderRadius: '8px',
+                backgroundColor: (theme) => theme.palette.mode === 'dark' ? '#0f172a' : '#fafbfc',
+              },
+            }}
+            slotProps={{
+              input: {
+                style: { fontSize: '0.9rem' },
+              },
+            }}
+            aria-label="Comment text"
+          />
+          <IconButton
+            color="primary"
+            type="submit"
+            disabled={!commentText.trim() || submitting}
+            aria-label="Send comment"
+          >
+            {submitting ? <CircularProgress size={20} /> : <SendIcon sx={{ fontSize: 20 }} />}
+          </IconButton>
+        </Box>
+      ) : (
+        <Box
           sx={{
-            background: getGradientForUsername(user?.username),
-            fontWeight: 700,
-            width: 32,
-            height: 32,
-            fontSize: '0.85rem',
+            p: 2,
+            mb: 2.5,
+            textAlign: 'center',
+            backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.03)' : '#f8fafc',
+            borderRadius: '10px',
+            border: (theme) => theme.palette.mode === 'dark' ? '1px dashed rgba(255,255,255,0.1)' : '1px dashed rgba(0,0,0,0.1)',
           }}
         >
-          {user?.username ? user.username[0].toUpperCase() : 'U'}
-        </Avatar>
-        <TextField
-          inputRef={commentInputRef}
-          placeholder="Write a comment..."
-          size="small"
-          fullWidth
-          value={commentText}
-          onChange={(e) => setCommentText(e.target.value)}
-          disabled={submitting}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-              e.preventDefault();
-              handleSubmitComment(e);
-            }
-          }}
-          sx={{
-            flexGrow: 1,
-            '& .MuiOutlinedInput-root': {
-              borderRadius: '8px',
-              backgroundColor: (theme) => theme.palette.mode === 'dark' ? '#0f172a' : '#fafbfc',
-            },
-          }}
-          slotProps={{
-            input: {
-              style: { fontSize: '0.9rem' },
-            },
-          }}
-          aria-label="Comment text"
-        />
-        <IconButton
-          color="primary"
-          type="submit"
-          disabled={!commentText.trim() || submitting}
-          aria-label="Send comment"
-        >
-          {submitting ? <CircularProgress size={20} /> : <SendIcon sx={{ fontSize: 20 }} />}
-        </IconButton>
-      </Box>
+          <Typography variant="body2" color="text.secondary">
+            You must be{' '}
+            <span
+              style={{ fontWeight: 700, cursor: 'pointer', color: '#1976d2', textDecoration: 'underline' }}
+              onClick={() => window.location.href = '/login'}
+            >
+              logged in
+            </span>{' '}
+            to comment on this post.
+          </Typography>
+        </Box>
+      )}
 
       {/* Comments List */}
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>

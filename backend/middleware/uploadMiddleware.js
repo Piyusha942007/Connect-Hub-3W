@@ -1,16 +1,14 @@
 const multer = require('multer');
-const path = require('path');
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const cloudinary = require('../config/cloudinary');
 
-// Configure disk storage
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, '../uploads'));
-  },
-  filename: (req, file, cb) => {
-    // Generate clean, collision-free filename
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    const ext = path.extname(file.originalname).toLowerCase();
-    cb(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
+// Configure Cloudinary storage — images are uploaded directly to Cloudinary cloud
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'connecthub-posts', // All post images go into this Cloudinary folder
+    allowed_formats: ['jpg', 'jpeg', 'png', 'webp'],
+    transformation: [{ width: 1200, crop: 'limit', quality: 'auto' }], // Auto-optimize
   },
 });
 
@@ -25,7 +23,7 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-// Initialize multer instance
+// Initialize multer instance with Cloudinary storage
 const upload = multer({
   storage: storage,
   limits: {

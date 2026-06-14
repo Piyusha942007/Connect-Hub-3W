@@ -1,10 +1,12 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useFeed } from '../hooks/useFeed';
+import { useAuth } from '../context/AuthContext';
 import Navbar from '../components/common/Navbar';
 import CreatePost from '../components/feed/CreatePost';
 import FeedList from '../components/feed/FeedList';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
 import Chip from '@mui/material/Chip';
@@ -16,6 +18,7 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { LikeIcon, CommentIcon, ClockIcon } from '../components/common/CustomIcons';
 
 const Home = () => {
+  const { user } = useAuth();
   const {
     posts,
     loading,
@@ -141,8 +144,46 @@ const Home = () => {
           </Alert>
         )}
 
-        {/* Create Post Component */}
-        <CreatePost onPostCreated={addPostLocally} showSnackbar={showSnackbar} />
+        {/* Create Post Component - only visible to logged in users */}
+        {user ? (
+          <CreatePost onPostCreated={addPostLocally} showSnackbar={showSnackbar} />
+        ) : (
+          <Box
+            sx={{
+              p: 3.5,
+              mb: 3.5,
+              mt: { xs: 2, sm: 0 },
+              textAlign: 'center',
+              backgroundColor: 'background.paper',
+              borderRadius: '12px',
+              border: (theme) => theme.palette.mode === 'dark' ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(0,0,0,0.05)',
+              boxShadow: '0px 4px 20px rgba(0,0,0,0.03)',
+            }}
+          >
+            <Typography variant="h6" fontWeight="bold" gutterBottom sx={{ fontSize: '1.05rem', color: 'text.primary' }}>
+              Share your thoughts with the community!
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 2.5, maxWidth: '400px', mx: 'auto', lineHeight: 1.5 }}>
+              Join ConnectHub to create posts, share images, vote on interactive polls, and discuss with others.
+            </Typography>
+            <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center' }}>
+              <Button
+                variant="outlined"
+                onClick={() => window.location.href = '/login'}
+                sx={{ borderRadius: '8px', fontWeight: 700, textTransform: 'none', px: 3, borderWidth: '2px', '&:hover': { borderWidth: '2px' } }}
+              >
+                Sign In
+              </Button>
+              <Button
+                variant="contained"
+                onClick={() => window.location.href = '/signup'}
+                sx={{ borderRadius: '8px', fontWeight: 700, textTransform: 'none', px: 3 }}
+              >
+                Create Account
+              </Button>
+            </Box>
+          </Box>
+        )}
 
         {/* Feed Tab Toggle (All vs Promotions/Featured Only) */}
         <Tabs

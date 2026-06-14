@@ -32,15 +32,8 @@ const AppRoutes = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
 
-          {/* Protected Feed Page */}
-          <Route
-            path="/"
-            element={
-              <ProtectedRoute>
-                <Home />
-              </ProtectedRoute>
-            }
-          />
+          {/* Public Feed Page */}
+          <Route path="/" element={<Home />} />
 
           {/* Fallback Catch-all: Redirects unrecognized paths to home */}
           <Route path="*" element={<Navigate to="/" replace />} />

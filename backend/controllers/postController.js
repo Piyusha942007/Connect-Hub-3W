@@ -1,6 +1,25 @@
 const Post = require('../models/Post');
-const fs = require('fs');
-const path = require('path');
+const cloudinary = require('../config/cloudinary');
+
+// Helper: extract Cloudinary public_id from a secure URL for deletion
+const getCloudinaryPublicId = (imageUrl) => {
+  if (!imageUrl || !imageUrl.startsWith('http')) return null;
+  // Example URL: https://res.cloudinary.com/<cloud>/image/upload/v123456/connecthub-posts/filename.jpg
+  try {
+    const parts = imageUrl.split('/');
+    const uploadIndex = parts.indexOf('upload');
+    if (uploadIndex === -1) return null;
+    // Everything after version segment (v123456/) is the public_id
+    const afterUpload = parts.slice(uploadIndex + 1);
+    // Skip the version segment if present (starts with 'v' followed by digits)
+    const start = /^v\d+$/.test(afterUpload[0]) ? 1 : 0;
+    const publicIdWithExt = afterUpload.slice(start).join('/');
+    // Remove file extension
+    return publicIdWithExt.replace(/\.[^/.]+$/, '');
+  } catch (e) {
+    return null;
+  }
+};
 
 /**
  * @desc    Create a new post
@@ -18,10 +37,11 @@ const createPost = async (req, res, next) => {
       return next(new Error('Post must contain text, an image, or a poll'));
     }
 
-    // 2. Set image path relative if file was uploaded
+    // 2. Set image URL from Cloudinary if file was uploaded
+    // multer-storage-cloudinary stores the full HTTPS URL in req.file.path
     let imagePath = '';
     if (file) {
-      imagePath = `/uploads/${file.filename}`;
+      imagePath = file.path; // Full Cloudinary secure URL e.g. https://res.cloudinary.com/...
     }
 
     // 3. Parse poll data if present
@@ -296,20 +316,21 @@ const updatePost = async (req, res, next) => {
       post.category = category;
     }
 
-    // 5. Handle image changes
+    // 5. Handle image changes — delete old Cloudinary image if removing or replacing
     if (removeImage === 'true' || file) {
       if (post.image) {
-        // Compute path to absolute backend/uploads directory file
-        const oldPath = path.join(__dirname, '..', post.image);
-        fs.unlink(oldPath, (err) => {
-          if (err) console.error(`[File Clean Error] Failed to delete old image file: ${err.message}`);
-        });
+        const publicId = getCloudinaryPublicId(post.image);
+        if (publicId) {
+          cloudinary.uploader.destroy(publicId).catch((err) =>
+            console.error(`[Cloudinary Clean Error] Failed to delete old image: ${err.message}`)
+          );
+        }
         post.image = '';
       }
     }
 
     if (file) {
-      post.image = `/uploads/${file.filename}`;
+      post.image = file.path; // Full Cloudinary secure URL
     }
 
     // 6. Save and return
@@ -342,12 +363,14 @@ const deletePost = async (req, res, next) => {
       return next(new Error('Not authorized to delete this post'));
     }
 
-    // 3. File Cleanup if image exists
+    // 3. File Cleanup — delete image from Cloudinary if it exists
     if (post.image) {
-      const imagePath = path.join(__dirname, '..', post.image);
-      fs.unlink(imagePath, (err) => {
-        if (err) console.error(`[File Clean Error] Failed to delete image file: ${err.message}`);
-      });
+      const publicId = getCloudinaryPublicId(post.image);
+      if (publicId) {
+        cloudinary.uploader.destroy(publicId).catch((err) =>
+          console.error(`[Cloudinary Clean Error] Failed to delete image: ${err.message}`)
+        );
+      }
     }
 
     // 4. Delete from database

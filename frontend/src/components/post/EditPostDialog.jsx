@@ -31,10 +31,15 @@ const EditPostDialog = ({ open, onClose, post, onPostUpdated, showSnackbar }) =>
   
   const fileInputRef = useRef(null);
 
-  // Compute full API URL for existing image
+  // Compute full image URL — supports Cloudinary (full URL) and legacy relative /uploads/ paths
   const getImageUrl = useCallback((imagePath) => {
     if (!imagePath) return '';
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+    // Full Cloudinary URL — use as-is
+    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+      return imagePath;
+    }
+    // Legacy relative path
+    const apiUrl = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/$/, '');
     return `${apiUrl}${imagePath}`;
   }, []);
 
