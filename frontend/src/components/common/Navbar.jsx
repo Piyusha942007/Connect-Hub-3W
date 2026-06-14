@@ -235,7 +235,7 @@ const Navbar = ({ searchQuery, onSearchChange }) => {
                 variant="outlined"
                 color="primary"
                 size="small"
-                onClick={logout}
+                onClick={() => { logout(); window.location.href = '/login'; }}
                 startIcon={<LogoutIcon size={16} />}
                 aria-label="Logout"
                 sx={{
@@ -253,7 +253,7 @@ const Navbar = ({ searchQuery, onSearchChange }) => {
               {/* Mobile Logout Icon Button */}
               <IconButton
                 color="primary"
-                onClick={logout}
+                onClick={() => { logout(); window.location.href = '/login'; }}
                 aria-label="Logout"
                 sx={{
                   display: { xs: 'flex', sm: 'none' },

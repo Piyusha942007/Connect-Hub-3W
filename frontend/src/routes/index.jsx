@@ -32,8 +32,8 @@ const AppRoutes = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
 
-          {/* Public Feed Page */}
-          <Route path="/" element={<Home />} />
+          {/* Protected Feed Page — requires login */}
+          <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
 
           {/* Fallback Catch-all: Redirects unrecognized paths to home */}
           <Route path="*" element={<Navigate to="/" replace />} />
