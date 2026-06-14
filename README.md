@@ -1,8 +1,8 @@
 # ConnectHub Social Feed
 
-> **Project Description**: A highly polished, responsive, and modern social media feed application clone built as the **3W Full Stack Internship Task Round 1** assessment. It includes dynamic post creations, social polls, category filtering, a real-time updates polling banner, and a LinkedIn-style split-pane modal view, optimized with React.memo and optimistic UI state updates.
+> A polished full-stack social feed clone with interactive polls, built for the **3W Full Stack Internship Task Round 1**.
 
-An internship assessment project implementing a modern, highly polished, and responsive social media feed named ConnectHub. This project focuses on high-quality code organization, separating frontend and backend, using Material UI (MUI) components, implementing page-based feed pagination, and applying instant optimistic state updates.
+ConnectHub is a responsive social media feed application built using React (Vite), Material-UI (MUI), Node, Express, and MongoDB. It focuses on clean MVC architecture, paginated feeds, real-time sync polling, and optimistic UI updates.
 
 ---
 

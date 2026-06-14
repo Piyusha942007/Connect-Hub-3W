@@ -18,10 +18,6 @@ export const ThemeModeProvider = ({ children }) => {
     if (savedMode === 'light' || savedMode === 'dark') {
       return savedMode;
     }
-    // Default to system preference or light
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      return 'dark';
-    }
     return 'light';
   });
 
