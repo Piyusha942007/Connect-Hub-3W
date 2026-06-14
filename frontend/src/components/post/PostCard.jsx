@@ -814,7 +814,7 @@ const PostCard = ({ post, onLikeToggle, onCommentAdded, onReplyAdded, onPostUpda
           },
         }}
       >
-        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, height: { xs: '85vh', md: '80vh' } }}>
+        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, height: { xs: '100vh', md: '80vh' } }}>
           {/* Left Media Panel */}
           {post.image && !imageError && (
             <Box
@@ -844,7 +844,7 @@ const PostCard = ({ post, onLikeToggle, onCommentAdded, onReplyAdded, onPostUpda
           <Box
             sx={{
               width: { xs: '100%', md: (post.image && !imageError) ? '45%' : '100%' },
-              height: { xs: (post.image && !imageError) ? 'calc(85vh - 220px)' : '85vh', md: '100%' },
+              height: { xs: (post.image && !imageError) ? 'calc(100vh - 220px)' : '100vh', md: '100%' },
               display: 'flex',
               flexDirection: 'column',
               backgroundColor: 'background.paper',
