@@ -371,165 +371,159 @@ const CreatePost = ({ onPostCreated, showSnackbar }) => {
               </Box>
             )}
 
+            {/* Bottom Toolbar: icons + category + post button */}
             <Box
               sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
                 pt: 1.5,
                 borderTop: '1px solid rgba(0,0,0,0.06)',
                 mt: 1,
-                gap: 1,
-                flexWrap: { xs: 'wrap', sm: 'nowrap' },
               }}
             >
-              {/* Media Upload & Emojis & Category select */}
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap' }}>
-                <input
-                  type="file"
-                  accept="image/jpeg,image/png,image/webp"
-                  style={{ display: 'none' }}
-                  ref={fileInputRef}
-                  onChange={handleImageChange}
-                  disabled={submitting}
-                  id="create-post-image-file"
-                />
-                <label htmlFor="create-post-image-file">
-                  <IconButton
-                    color="primary"
-                    component="span"
-                    disabled={submitting || isPollActive}
-                    aria-label="Upload image file"
-                    sx={{
-                      backgroundColor: 'rgba(25, 118, 210, 0.04)',
-                      '&:hover': {
-                        backgroundColor: 'rgba(25, 118, 210, 0.08)',
-                      },
-                    }}
-                  >
-                    <ImageIcon size={20} />
-                  </IconButton>
-                </label>
- 
-                {/* Emoji Trigger Icon */}
-                <IconButton
-                  color="primary"
-                  onClick={handleEmojiClick}
-                  disabled={submitting}
-                  aria-label="Add emoji"
-                  sx={{
-                    backgroundColor: 'rgba(25, 118, 210, 0.04)',
-                    '&:hover': {
-                      backgroundColor: 'rgba(25, 118, 210, 0.08)',
-                    },
-                  }}
-                >
-                  <EmojiIcon size={20} />
-                </IconButton>
-
-                {/* Poll Trigger Icon */}
-                <IconButton
-                  color="primary"
-                  onClick={handleTogglePoll}
-                  disabled={submitting || !!imageFile}
-                  aria-label="Create a poll"
-                  sx={{
-                    backgroundColor: isPollActive ? 'rgba(25, 118, 210, 0.12)' : 'rgba(25, 118, 210, 0.04)',
-                    '&:hover': {
-                      backgroundColor: isPollActive ? 'rgba(25, 118, 210, 0.16)' : 'rgba(25, 118, 210, 0.08)',
-                    },
-                  }}
-                >
-                  <PollIcon size={20} />
-                </IconButton>
-
-                {/* Category select dropdown */}
-                <FormControl size="small" variant="outlined" sx={{ minWidth: 110 }}>
-                  <Select
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                    disabled={submitting}
-                    displayEmpty
-                    inputProps={{ 'aria-label': 'Select category' }}
-                    sx={{
-                      borderRadius: '8px',
-                      fontSize: '0.8rem',
-                      fontWeight: 600,
-                      height: 36,
-                      backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : '#fafbfc',
-                      color: 'text.primary',
-                      '& .MuiOutlinedInput-notchedOutline': {
-                        border: 'none'
-                      },
-                      '&:hover .MuiOutlinedInput-notchedOutline': {
-                        border: 'none'
-                      },
-                      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                        border: 'none'
-                      },
-                      border: (theme) => theme.palette.mode === 'dark' ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(0,0,0,0.08)',
-                    }}
-                  >
-                    <MenuItem value="General" sx={{ fontSize: '0.8rem', fontWeight: 600 }}>General</MenuItem>
-                    <MenuItem value="Finance" sx={{ fontSize: '0.8rem', fontWeight: 600 }}>Finance</MenuItem>
-                    <MenuItem value="Career" sx={{ fontSize: '0.8rem', fontWeight: 600 }}>Career</MenuItem>
-                    <MenuItem value="Education" sx={{ fontSize: '0.8rem', fontWeight: 600 }}>Education</MenuItem>
-                    <MenuItem value="Technology" sx={{ fontSize: '0.8rem', fontWeight: 600 }}>Technology</MenuItem>
-                  </Select>
-                </FormControl>
-
-                {/* Emoji Picker Popover */}
-                <Popover
-                  open={Boolean(emojiAnchorEl)}
-                  anchorEl={emojiAnchorEl}
-                  onClose={handleEmojiClose}
-                  anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
-                  }}
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'left',
-                  }}
-                >
-                  <EmojiPicker onEmojiClick={handleEmojiSelect} />
-                </Popover>
-
-                {imageFile && (
-                  <Typography
-                    variant="caption"
-                    color="text.secondary"
-                    sx={{ ml: 0.5, display: { xs: 'none', sm: 'inline' }, fontWeight: 500 }}
-                  >
-                    {imageFile.name.length > 15
-                      ? `${imageFile.name.substring(0, 12)}...`
-                      : imageFile.name}
-                  </Typography>
-                )}
-              </Box>
-
-              {/* Submit Button */}
-              <Button
-                variant="contained"
-                onClick={handleSubmit}
-                disabled={isPostDisabled || submitting}
+              {/* Row 1: Media icons + category select (always a single flex row) */}
+              <Box
                 sx={{
-                  px: { xs: 2, sm: 4 },
-                  borderRadius: '8px',
-                  fontWeight: 600,
-                  minWidth: { xs: 'auto', sm: 120 },
-                  flexShrink: 0,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: { xs: 0.5, sm: 1 },
                 }}
               >
-                {submitting ? (
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <CircularProgress size={16} color="inherit" />
-                    <Typography variant="body2" sx={{ fontWeight: 600, color: 'inherit' }}>Posting...</Typography>
-                  </Box>
-                ) : (
-                  'Post'
-                )}
-              </Button>
+                {/* Left: action icons */}
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 0.5, sm: 1 } }}>
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    style={{ display: 'none' }}
+                    ref={fileInputRef}
+                    onChange={handleImageChange}
+                    disabled={submitting}
+                    id="create-post-image-file"
+                  />
+                  <label htmlFor="create-post-image-file">
+                    <IconButton
+                      color="primary"
+                      component="span"
+                      disabled={submitting || isPollActive}
+                      aria-label="Upload image file"
+                      size="small"
+                      sx={{
+                        backgroundColor: 'rgba(25, 118, 210, 0.04)',
+                        '&:hover': { backgroundColor: 'rgba(25, 118, 210, 0.08)' },
+                      }}
+                    >
+                      <ImageIcon size={18} />
+                    </IconButton>
+                  </label>
+
+                  <IconButton
+                    color="primary"
+                    onClick={handleEmojiClick}
+                    disabled={submitting}
+                    aria-label="Add emoji"
+                    size="small"
+                    sx={{
+                      backgroundColor: 'rgba(25, 118, 210, 0.04)',
+                      '&:hover': { backgroundColor: 'rgba(25, 118, 210, 0.08)' },
+                    }}
+                  >
+                    <EmojiIcon size={18} />
+                  </IconButton>
+
+                  <IconButton
+                    color="primary"
+                    onClick={handleTogglePoll}
+                    disabled={submitting || !!imageFile}
+                    aria-label="Create a poll"
+                    size="small"
+                    sx={{
+                      backgroundColor: isPollActive ? 'rgba(25, 118, 210, 0.12)' : 'rgba(25, 118, 210, 0.04)',
+                      '&:hover': { backgroundColor: isPollActive ? 'rgba(25, 118, 210, 0.16)' : 'rgba(25, 118, 210, 0.08)' },
+                    }}
+                  >
+                    <PollIcon size={18} />
+                  </IconButton>
+                </Box>
+
+                {/* Right: Category + Post button side by side */}
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexShrink: 0 }}>
+                  <FormControl size="small" variant="outlined" sx={{ minWidth: { xs: 90, sm: 110 } }}>
+                    <Select
+                      value={category}
+                      onChange={(e) => setCategory(e.target.value)}
+                      disabled={submitting}
+                      displayEmpty
+                      inputProps={{ 'aria-label': 'Select category' }}
+                      sx={{
+                        borderRadius: '8px',
+                        fontSize: { xs: '0.72rem', sm: '0.8rem' },
+                        fontWeight: 600,
+                        height: 34,
+                        backgroundColor: (theme) => theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.05)' : '#fafbfc',
+                        color: 'text.primary',
+                        '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                        '&:hover .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                        border: (theme) => theme.palette.mode === 'dark' ? '1px solid rgba(255,255,255,0.1)' : '1px solid rgba(0,0,0,0.08)',
+                      }}
+                    >
+                      <MenuItem value="General" sx={{ fontSize: '0.8rem', fontWeight: 600 }}>General</MenuItem>
+                      <MenuItem value="Finance" sx={{ fontSize: '0.8rem', fontWeight: 600 }}>Finance</MenuItem>
+                      <MenuItem value="Career" sx={{ fontSize: '0.8rem', fontWeight: 600 }}>Career</MenuItem>
+                      <MenuItem value="Education" sx={{ fontSize: '0.8rem', fontWeight: 600 }}>Education</MenuItem>
+                      <MenuItem value="Technology" sx={{ fontSize: '0.8rem', fontWeight: 600 }}>Technology</MenuItem>
+                    </Select>
+                  </FormControl>
+
+                  <Button
+                    variant="contained"
+                    onClick={handleSubmit}
+                    disabled={isPostDisabled || submitting}
+                    sx={{
+                      px: { xs: 1.5, sm: 3 },
+                      py: 0.7,
+                      borderRadius: '8px',
+                      fontWeight: 700,
+                      fontSize: { xs: '0.8rem', sm: '0.875rem' },
+                      minWidth: { xs: 56, sm: 90 },
+                      flexShrink: 0,
+                      height: 34,
+                    }}
+                  >
+                    {submitting ? (
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8 }}>
+                        <CircularProgress size={14} color="inherit" />
+                        <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>Posting...</Box>
+                      </Box>
+                    ) : (
+                      'Post'
+                    )}
+                  </Button>
+                </Box>
+              </Box>
+
+              {/* Emoji Picker Popover — constrained width so it never overflows on mobile */}
+              <Popover
+                open={Boolean(emojiAnchorEl)}
+                anchorEl={emojiAnchorEl}
+                onClose={handleEmojiClose}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+                transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+                slotProps={{
+                  paper: {
+                    sx: {
+                      maxWidth: '100vw',
+                      overflow: 'hidden',
+                    },
+                  },
+                }}
+              >
+                <Box sx={{ maxWidth: '100vw', overflow: 'hidden' }}>
+                  <EmojiPicker
+                    onEmojiClick={handleEmojiSelect}
+                    width={Math.min(320, typeof window !== 'undefined' ? window.innerWidth - 16 : 320)}
+                  />
+                </Box>
+              </Popover>
             </Box>
           </Box>
         </Box>
