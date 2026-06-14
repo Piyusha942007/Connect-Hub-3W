@@ -210,6 +210,7 @@ const Navbar = ({ searchQuery, onSearchChange }) => {
                 </Typography>
               </Box>
 
+              {/* Desktop Logout Button */}
               <Button
                 variant="outlined"
                 color="primary"
@@ -223,10 +224,26 @@ const Navbar = ({ searchQuery, onSearchChange }) => {
                   py: 0.6,
                   fontWeight: 600,
                   fontSize: '0.8rem',
+                  display: { xs: 'none', sm: 'inline-flex' }
                 }}
               >
                 Logout
               </Button>
+
+              {/* Mobile Logout Icon Button */}
+              <IconButton
+                color="primary"
+                onClick={logout}
+                aria-label="Logout"
+                sx={{
+                  display: { xs: 'flex', sm: 'none' },
+                  border: (theme) => `1px solid ${theme.palette.primary.main}`,
+                  borderRadius: '50%',
+                  p: 0.8,
+                }}
+              >
+                <LogoutIcon size={18} />
+              </IconButton>
             </Box>
           )}
         </Toolbar>

@@ -52,6 +52,14 @@ const PostCard = ({ post, onLikeToggle, onCommentAdded, onReplyAdded, onPostUpda
   const [showHeartPop, setShowHeartPop] = useState(false);
   const clickTimeoutRef = React.useRef(null);
   const [likeAnimated, setLikeAnimated] = useState(false);
+  const imgRef = React.useRef(null);
+
+  // Fix React cached image onLoad bug
+  React.useEffect(() => {
+    if (imgRef.current && imgRef.current.complete) {
+      setImageLoaded(true);
+    }
+  }, [post.image]);
 
   // Poll properties and handler
   const userVotedOption = post.poll
@@ -540,6 +548,7 @@ const PostCard = ({ post, onLikeToggle, onCommentAdded, onReplyAdded, onPostUpda
             />
           )}
           <img
+            ref={imgRef}
             src={getImageUrl(post.image)}
             alt="Post media (click to view full screen, double click to like)"
             style={{
@@ -631,7 +640,7 @@ const PostCard = ({ post, onLikeToggle, onCommentAdded, onReplyAdded, onPostUpda
       </Box>
 
       {/* Interaction Actions */}
-      <CardActions sx={{ px: 1, py: 0.5, borderTop: '1px solid rgba(0,0,0,0.04)', justifyContent: 'space-around', gap: 0.5 }}>
+      <CardActions sx={{ px: 1, py: 0.5, borderTop: '1px solid rgba(0,0,0,0.04)', justifyContent: 'space-around', gap: { xs: 0.2, sm: 0.5 } }}>
         <Button
           size="medium"
           color={isLikedByMe ? 'primary' : 'inherit'}
@@ -650,8 +659,9 @@ const PostCard = ({ post, onLikeToggle, onCommentAdded, onReplyAdded, onPostUpda
             borderRadius: '8px',
             color: isLikedByMe ? 'primary.main' : 'text.secondary',
             py: 1,
+            px: { xs: 0.5, sm: 1.5 },
             fontWeight: 700,
-            fontSize: '0.82rem',
+            fontSize: { xs: '0.72rem', sm: '0.82rem' },
             textTransform: 'none',
             '&:hover': {
               backgroundColor: 'rgba(25, 118, 210, 0.08)',
@@ -660,7 +670,9 @@ const PostCard = ({ post, onLikeToggle, onCommentAdded, onReplyAdded, onPostUpda
           }}
           aria-label={isLikedByMe ? 'Unlike post' : 'Like post'}
         >
-          {isLikedByMe ? 'Liked' : 'Like'}
+          <Box component="span" sx={{ display: { xs: 'none', '@media (min-width: 400px)': { display: 'inline' } } }}>
+            {isLikedByMe ? 'Liked' : 'Like'}
+          </Box>
         </Button>
         
         <Button
@@ -673,8 +685,9 @@ const PostCard = ({ post, onLikeToggle, onCommentAdded, onReplyAdded, onPostUpda
             borderRadius: '8px',
             color: 'text.secondary',
             py: 1,
+            px: { xs: 0.5, sm: 1.5 },
             fontWeight: 600,
-            fontSize: '0.82rem',
+            fontSize: { xs: '0.72rem', sm: '0.82rem' },
             textTransform: 'none',
             '&:hover': {
               backgroundColor: 'rgba(46, 125, 50, 0.08)',
@@ -682,9 +695,11 @@ const PostCard = ({ post, onLikeToggle, onCommentAdded, onReplyAdded, onPostUpda
             },
           }}
         >
-          Comment
+          <Box component="span" sx={{ display: { xs: 'none', '@media (min-width: 400px)': { display: 'inline' } } }}>
+            Comment
+          </Box>
         </Button>
-
+ 
         <Button
           size="medium"
           color="inherit"
@@ -699,8 +714,9 @@ const PostCard = ({ post, onLikeToggle, onCommentAdded, onReplyAdded, onPostUpda
             borderRadius: '8px',
             color: 'text.secondary',
             py: 1,
+            px: { xs: 0.5, sm: 1.5 },
             fontWeight: 600,
-            fontSize: '0.82rem',
+            fontSize: { xs: '0.72rem', sm: '0.82rem' },
             textTransform: 'none',
             '&:hover': {
               backgroundColor: 'rgba(2, 136, 209, 0.08)',
@@ -708,9 +724,11 @@ const PostCard = ({ post, onLikeToggle, onCommentAdded, onReplyAdded, onPostUpda
             },
           }}
         >
-          Share
+          <Box component="span" sx={{ display: { xs: 'none', '@media (min-width: 400px)': { display: 'inline' } } }}>
+            Share
+          </Box>
         </Button>
-
+ 
         {user && post.userId === user._id && (
           <Button
             size="medium"
@@ -722,7 +740,8 @@ const PostCard = ({ post, onLikeToggle, onCommentAdded, onReplyAdded, onPostUpda
               borderRadius: '8px',
               color: post.isPromoted ? '#d4af37' : 'text.secondary',
               py: 1,
-              fontSize: '0.82rem',
+              px: { xs: 0.5, sm: 1.5 },
+              fontSize: { xs: '0.72rem', sm: '0.82rem' },
               fontWeight: post.isPromoted ? 700 : 600,
               textTransform: 'none',
               '&:hover': {
@@ -731,7 +750,9 @@ const PostCard = ({ post, onLikeToggle, onCommentAdded, onReplyAdded, onPostUpda
               },
             }}
           >
-            {post.isPromoted ? 'Featured' : 'Promote'}
+            <Box component="span" sx={{ display: { xs: 'none', '@media (min-width: 400px)': { display: 'inline' } } }}>
+              {post.isPromoted ? 'Featured' : 'Promote'}
+            </Box>
           </Button>
         )}
       </CardActions>
@@ -766,13 +787,13 @@ const PostCard = ({ post, onLikeToggle, onCommentAdded, onReplyAdded, onPostUpda
           },
         }}
       >
-        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, height: { xs: 'auto', md: '80vh' } }}>
+        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, height: { xs: '85vh', md: '80vh' } }}>
           {/* Left Media Panel */}
           {post.image && (
             <Box
               sx={{
                 width: { xs: '100%', md: '55%' },
-                height: { xs: '300px', md: '100%' },
+                height: { xs: '220px', md: '100%' },
                 backgroundColor: '#0f172a',
                 display: 'flex',
                 alignItems: 'center',
@@ -796,7 +817,7 @@ const PostCard = ({ post, onLikeToggle, onCommentAdded, onReplyAdded, onPostUpda
           <Box
             sx={{
               width: { xs: '100%', md: post.image ? '45%' : '100%' },
-              height: '100%',
+              height: { xs: post.image ? 'calc(85vh - 220px)' : '85vh', md: '100%' },
               display: 'flex',
               flexDirection: 'column',
               backgroundColor: 'background.paper',
