@@ -33,48 +33,55 @@ ConnectHub is a responsive social media feed application built using React (Vite
 ## Project Folder Structure
 
 ```
-/ (Workspace Root - Frontend Vite Project)
-├── package.json            # Frontend script entry and dependencies
-├── vite.config.js          # Vite config (Server port 5173, Plugins)
-├── index.html              # Frontend DOM mount container
-├── .env.example            # Frontend environment variable template
-├── src/
-│   ├── api/
-│   │   └── client.js       # Axios client instance with Bearer JWT interceptors
-│   ├── components/
-│   │   ├── auth/
-│   │   │   ├── LoginForm.jsx   # Form validation & Login input
-│   │   │   └── SignupForm.jsx  # Form validation & Registration input
-│   │   ├── feed/
-│   │   │   ├── CreatePost.jsx  # Text & Image post creation card
-│   │   │   └── FeedList.jsx    # Paginated feed manager (Skeletons & Empties)
-│   │   ├── post/
-│   │   │   ├── PostCard.jsx    # Memoized post component (Likes & Comments)
-│   │   │   └── CommentSection.jsx # Memoized comment panel with input
-│   │   └── common/
-│   │       ├── Navbar.jsx      # Top responsive branding & Profile navigation
-│   │       ├── ProtectedRoute.jsx # Authentication route guard
-│   │       └── ErrorBoundary.jsx  # React exception fallback handler
-│   ├── context/
-│   │   └── AuthContext.jsx # Reusable user authentication context provider
-│   ├── hooks/
-│   │   └── useFeed.js      # Custom hook managing paginated feed & optimistic updates
-│   ├── pages/
-│   │   ├── Home.jsx        # Lazy-loaded Dashboard compose container
-│   │   ├── Login.jsx       # Lazy-loaded Sign In page
-│   │   └── Signup.jsx      # Lazy-loaded Sign Up page
-│   ├── routes/
-│   │   └── index.jsx       # App Routing configuration
-│   ├── utils/
-│   │   └── helpers.js      # Relative time string formatter
-│   ├── services/
-│   │   └── apiService.js   # Abstracted Axios operations
-│   ├── theme.js            # Custom MUI theme (primary color #1976d2, shape 16px)
-│   ├── index.css           # Google font imports and baseline layout reset
-│   ├── App.jsx             # Top level provider wrapper
-│   └── main.jsx            # Rendering entry point
+/ (Workspace Root)
+├── README.md               # Project documentation
+├── render.yaml             # Render Blueprint specification configuration
+├── .gitignore              # Global git ignore configuration
+├── vercel.json             # Vercel deployment configuration settings
 │
-└── backend/                # Backend API Server
+├── frontend/               # Frontend Client Application (React.js + Vite)
+│   ├── package.json        # Frontend script entry and dependencies
+│   ├── vite.config.js      # Vite config (Server port 5173, Plugins)
+│   ├── index.html          # Frontend DOM mount container
+│   ├── .env.example        # Frontend environment variable template
+│   ├── src/
+│   │   ├── api/
+│   │   │   └── client.js   # Axios client instance with Bearer JWT interceptors
+│   │   ├── components/
+│   │   │   ├── auth/
+│   │   │   │   ├── LoginForm.jsx   # Form validation & Login input
+│   │   │   │   └── SignupForm.jsx  # Form validation & Registration input
+│   │   │   ├── feed/
+│   │   │   │   ├── CreatePost.jsx  # Text & Image post creation card
+│   │   │   │   └── FeedList.jsx    # Paginated feed manager (Skeletons & Empties)
+│   │   │   ├── post/
+│   │   │   │   ├── PostCard.jsx    # Memoized post component (Likes & Comments)
+│   │   │   │   └── CommentSection.jsx # Memoized comment panel with input
+│   │   │   └── common/
+│   │   │       ├── Navbar.jsx      # Top responsive branding & Profile navigation
+│   │   │       ├── ProtectedRoute.jsx # Authentication route guard
+│   │   │       └── ErrorBoundary.jsx  # React exception fallback handler
+│   │   ├── context/
+│   │   │   └── AuthContext.jsx # Reusable user authentication context provider
+│   │   ├── hooks/
+│   │   │   └── useFeed.js      # Custom hook managing paginated feed & optimistic updates
+│   │   ├── pages/
+│   │   │   ├── Home.jsx        # Lazy-loaded Dashboard compose container
+│   │   │   ├── Login.jsx       # Lazy-loaded Sign In page
+│   │   │   └── Signup.jsx      # Lazy-loaded Sign Up page
+│   │   ├── routes/
+│   │   │   └── index.jsx       # App Routing configuration
+│   │   ├── utils/
+│   │   │   └── helpers.js      # Relative time string formatter
+│   │   ├── services/
+│   │   │   └── apiService.js   # Abstracted Axios operations
+│   │   ├── theme.js            # Custom MUI theme (primary color #1976d2, shape 16px)
+│   │   ├── index.css           # Google font imports and baseline layout reset
+│   │   ├── App.jsx             # Top level provider wrapper
+│   │   └── main.jsx            # Rendering entry point
+│   └── public/             # Static public assets
+│
+└── backend/                # Backend API Server (Node.js + Express)
     ├── package.json        # Backend dependencies & Scripts
     ├── server.js           # Express app setup, static directories, entry point
     ├── .env.example        # Backend environment variable template
@@ -99,10 +106,12 @@ ConnectHub is a responsive social media feed application built using React (Vite
 
 ## Installation & Running Locally
 
-### Step 1: Install Frontend (Root)
-Navigate to the root directory and install dependencies:
+### Step 1: Install Frontend
+Navigate to the `frontend/` directory and install dependencies:
 ```bash
+cd frontend
 npm install
+cd ..
 ```
 
 ### Step 2: Install Backend
@@ -116,7 +125,7 @@ cd ..
 ### Step 3: Set Environment Variables
 Create `.env` files in both directories based on the `.env.example` templates.
 
-* **Frontend `.env`** (placed in the root directory):
+* **Frontend `.env`** (placed in the `frontend/` directory):
   ```env
   VITE_API_URL=http://localhost:5000
   ```
@@ -138,6 +147,7 @@ Open two separate terminal consoles:
   ```
 * **Terminal 2: Start Frontend**
   ```bash
+  cd frontend
   npm run dev
   ```
 
@@ -349,12 +359,12 @@ You can deploy using Render's Blueprint Specification:
 
 ### 💻 Frontend Deployment (Vercel)
 
-The repository includes a `vercel.json` file configuring rewrites for React Router (Single Page Application routing).
+The frontend project has its configurations and files nested in the `frontend` subdirectory.
 1. Create a free account at [Vercel](https://vercel.com).
 2. Click **Add New** -> **Project** and import your repository.
 3. In the project configure settings:
    * **Framework Preset**: `Vite` (Vercel detects this automatically)
-   * **Root Directory**: (Leave blank, which compiles the main workspace)
+   * **Root Directory**: `frontend`
    * **Build Command**: `npm run build`
    * **Output Directory**: `dist`
 4. Add the environment variables:

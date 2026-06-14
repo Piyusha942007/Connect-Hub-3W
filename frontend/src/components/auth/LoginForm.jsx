@@ -15,7 +15,7 @@ import EmailIcon from '@mui/icons-material/Email';
 import LockIcon from '@mui/icons-material/Lock';
 
 const LoginForm = () => {
-  const { login } = useAuth();
+  const { login, signup } = useAuth();
   const navigate = useNavigate();
 
   // Form states
@@ -27,6 +27,37 @@ const LoginForm = () => {
   const [apiError, setApiError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  const handleDemoLogin = async (e) => {
+    if (e) e.preventDefault();
+    setApiError('');
+    setErrors({});
+    setSubmitting(true);
+    
+    const demoEmail = 'guest@example.com';
+    const demoPassword = 'password123';
+    const demoUsername = 'GuestUser';
+    
+    // Visually pre-fill
+    setEmail(demoEmail);
+    setPassword(demoPassword);
+    
+    try {
+      // 1. Try logging in
+      await login(demoEmail, demoPassword);
+      navigate('/');
+    } catch (err) {
+      // 2. If it fails, automatically attempt to signup, then log in
+      try {
+        await signup(demoUsername, demoEmail, demoPassword);
+        navigate('/');
+      } catch (signupErr) {
+        setApiError(signupErr.message || 'Demo Quick-Login failed. Please register manually.');
+      }
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   // Email format regex
   const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
@@ -146,6 +177,40 @@ const LoginForm = () => {
         sx={{ mt: 3, mb: 2, py: 1.5 }}
       >
         {submitting ? <CircularProgress size={26} color="inherit" /> : 'Log In'}
+      </Button>
+
+      <Box sx={{ display: 'flex', alignItems: 'center', my: 2 }}>
+        <Box sx={{ flex: 1, height: '1px', backgroundColor: 'divider' }} />
+        <Typography
+          variant="caption"
+          color="text.secondary"
+          sx={{ mx: 2, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5 }}
+        >
+          Or Save Time
+        </Typography>
+        <Box sx={{ flex: 1, height: '1px', backgroundColor: 'divider' }} />
+      </Box>
+
+      <Button
+        fullWidth
+        variant="outlined"
+        color="primary"
+        size="large"
+        onClick={handleDemoLogin}
+        disabled={submitting}
+        sx={{
+          mb: 1,
+          py: 1.2,
+          fontWeight: 700,
+          borderRadius: 2.5,
+          borderWidth: '2px',
+          textTransform: 'none',
+          '&:hover': {
+            borderWidth: '2px',
+          },
+        }}
+      >
+        ⚡ Quick Demo Login
       </Button>
 
       <Box sx={{ textAlignment: 'center', mt: 2, display: 'flex', justifyContent: 'center' }}>

@@ -42,11 +42,16 @@ if (process.env.CLIENT_URL) {
 const corsOptions = {
   origin: (origin, callback) => {
     if (!origin) return callback(null, true);
-    // Allow if exact match, starting prefix match (like vercel branch previews), or wildcard
-    if (allowedOrigins.includes(origin) || allowedOrigins.some(o => o !== '*' && origin.startsWith(o)) || allowedOrigins.includes('*')) {
+    // Allow if exact match, ends with .vercel.app, prefix match, or wildcard
+    const isAllowed = allowedOrigins.includes(origin) ||
+                      origin.endsWith('.vercel.app') ||
+                      allowedOrigins.some(o => o !== '*' && origin.startsWith(o)) ||
+                      allowedOrigins.includes('*');
+    
+    if (isAllowed) {
       callback(null, true);
     } else {
-      callback(new Error(`CORS Error: Origin ${origin} is not allowed`));
+      callback(null, false); // Simply omit headers to reject rather than crash the server
     }
   },
   credentials: true,
@@ -70,6 +75,9 @@ app.get('/api/health', (req, res) => {
 });
 
 // Application Routes
+app.get('/', (req, res) => {
+  res.status(200).send('ConnectHub API Server is running successfully');
+});
 app.use('/api/auth', authRoutes);
 app.use('/api/posts', postRoutes);
 
